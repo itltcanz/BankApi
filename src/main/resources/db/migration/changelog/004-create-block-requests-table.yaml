@@ -1,0 +1,54 @@
+databaseChangeLog:
+  - changeSet:
+      id: 004
+      author: itltcanz
+      changes:
+        - createTable:
+            tableName: block_requests
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: card_id
+                  type: varchar(19)
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_block_requests_card
+                    references: cards(number)
+              - column:
+                  name: user_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_block_requests_user
+                    references: users(id)
+              - column:
+                  name: status
+                  type: varchar(50)
+                  defaultValue: PENDING
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: timestamp
+              - column:
+                  name: admin_id
+                  type: uuid
+                  constraints:
+                    foreignKeyName: fk_block_requests_admin
+                    references: users(id)
+        - createIndex:
+            tableName: block_requests
+            columns:
+              - column:
+                  name: card_id
+              - column:
+                  name: user_id

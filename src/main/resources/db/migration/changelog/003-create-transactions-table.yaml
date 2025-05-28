@@ -1,0 +1,50 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003
+      author: itltcanz
+      changes:
+        - createTable:
+            tableName: transactions
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: receiver_card_id
+                  type: varchar(19)
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_transactions_receiver_card
+                    references: cards(number)
+              - column:
+                  name: sender_card_id
+                  type: varchar(19)
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_transactions_sender_card
+                    references: cards(number)
+              - column:
+                  name: amount
+                  type: decimal(19,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: varchar(50)
+                  defaultValue: PENDING
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+        - createIndex:
+            tableName: transactions
+            columns:
+              - column:
+                  name: receiver_card_id
+              - column:
+                  name: sender_card_id

@@ -1,0 +1,40 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002
+      author: itltcanz
+      changes:
+        - createTable:
+            tableName: cards
+            columns:
+              - column:
+                  name: number
+                  type: varchar(19)
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: owner_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_cards_users
+                    references: users(id)
+              - column:
+                  name: validity_period
+                  type: varchar(7) # Формат YYYY-MM
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: balance
+                  type: decimal(19,2)
+                  constraints:
+                    nullable: false
+        - createIndex:
+            tableName: cards
+            columns:
+              - column:
+                  name: owner_id
