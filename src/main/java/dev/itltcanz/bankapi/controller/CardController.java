@@ -50,8 +50,8 @@ public class CardController {
 
     @GetMapping()
     @Operation(
-        summary = "Get a list of cards",
-        description = "Sends a list of the user's cards or all the cards if the method is called by the administrator"
+        summary = "Get a page of cards",
+        description = "Sends a page of the user's cards or all the cards if the method is called by the administrator"
     )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "The cards have been sent successfully")

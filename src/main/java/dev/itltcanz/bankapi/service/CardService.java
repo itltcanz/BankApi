@@ -39,31 +39,36 @@ public class CardService {
     }
 
     public void deleteCard(String cardId) {
-        var card = findByIdValid(cardId);
+        var card = findByIdValidRole(cardId);
         cardRepo.delete(card);
     }
 
     public CardDtoResponse getCardById(@NotNull String cardId) {
         userService.hasRights(cardId);
-        var card = findByIdValid(cardId);
+        var card = findByIdValidRole(cardId);
         return modelMapper.map(card, CardDtoResponse.class);
     }
 
     public CardDtoResponse putCard(@NotNull String cardId, @NotNull CardDtoPut cardDto) {
-        var cardEntity = findByIdValid(cardId);
+        var cardEntity = findByIdValidRole(cardId);
         modelMapper.map(cardDto, cardEntity);
         var savedCard = cardRepo.save(cardEntity);
         return modelMapper.map(savedCard, CardDtoResponse.class);
     }
 
     public CardDtoResponse patchCard(@NotNull String cardId, @NotNull CardDtoPatch cardDto) {
-        var cardEntity = findByIdValid(cardId);
+        var cardEntity = findByIdValidRole(cardId);
         modelMapper.map(cardDto, cardEntity);
         var savedCard = cardRepo.save(cardEntity);
         return modelMapper.map(savedCard, CardDtoResponse.class);
     }
 
     public Card findByIdValid(String cardId) {
+        return cardRepo.findById(cardId)
+            .orElseThrow(() -> new NotFoundException("A card with the number " + cardId + " has not been found."));
+    }
+
+    public Card findByIdValidRole(String cardId) {
         var currentUser = userService.getCurrentUser();
         var card = cardRepo.findById(cardId)
             .orElseThrow(() -> new NotFoundException("A card with the number " + cardId + " has not been found."));

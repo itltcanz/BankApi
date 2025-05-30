@@ -10,6 +10,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "block_requests")
 @Getter
 @Setter
 @AllArgsConstructor

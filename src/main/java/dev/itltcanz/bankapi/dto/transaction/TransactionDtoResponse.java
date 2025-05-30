@@ -18,5 +18,5 @@ public class TransactionDtoResponse {
     private String receiverCardId;
     private BigDecimal amount;
     private TransactionStatus status;
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt;
 }

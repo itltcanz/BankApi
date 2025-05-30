@@ -10,12 +10,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/v1/transactions")
@@ -41,4 +41,22 @@ public class TransactionController {
         @RequestBody @Valid TransactionDtoCreate transactionDto) {
         return ResponseEntity.ok(transactionService.createTransaction(transactionDto));
     }
+
+    @GetMapping
+    @Operation(
+        summary = "Get a page of transactions",
+        description = "Sends a page of the transactions"
+    )
+    @ApiResponses(
+        @ApiResponse(responseCode = "200", description = "The transactions have been sent successfully")
+    )
+    @Secured("ROLE_ADMIN")
+    public ResponseEntity<Page<TransactionDtoResponse>> getTransactions(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size
+    ) {
+        var pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(transactionService.getTransactions(pageable));
+    }
+
 }

@@ -97,7 +97,7 @@ class BlockRequestServiceTest {
     @WithMockUser(username = "testuser", roles = "USER")
     void createRequest_success() {
         BlockRequestDtoCreate dto = new BlockRequestDtoCreate(card.getNumber());
-        when(cardService.findByIdValid(card.getNumber())).thenReturn(card);
+        when(cardService.findByIdValidRole(card.getNumber())).thenReturn(card);
         when(userService.getCurrentUser()).thenReturn(user);
         when(requestRepo.save(any(BlockRequest.class))).thenReturn(request);
         when(modelMapper.map(request, BlockRequestDtoResponse.class)).thenReturn(response);
@@ -107,7 +107,7 @@ class BlockRequestServiceTest {
         assertNotNull(result);
         assertEquals(response.getId(), result.getId());
         assertEquals(response.getCardId(), result.getCardId());
-        verify(cardService).findByIdValid(card.getNumber());
+        verify(cardService).findByIdValidRole(card.getNumber());
         verify(userService).getCurrentUser();
         verify(requestRepo).save(any(BlockRequest.class));
         verify(modelMapper).map(request, BlockRequestDtoResponse.class);
@@ -118,10 +118,10 @@ class BlockRequestServiceTest {
     void createRequest_cardBlocked_throwsIllegalStateException() {
         BlockRequestDtoCreate dto = new BlockRequestDtoCreate(card.getNumber());
         card.setStatus(CardStatus.BLOCKED);
-        when(cardService.findByIdValid(card.getNumber())).thenReturn(card);
+        when(cardService.findByIdValidRole(card.getNumber())).thenReturn(card);
 
         assertThrows(IllegalStateException.class, () -> blockRequestService.createRequest(dto));
-        verify(cardService).findByIdValid(card.getNumber());
+        verify(cardService).findByIdValidRole(card.getNumber());
         verify(requestRepo, never()).save(any(BlockRequest.class));
         verify(modelMapper, never()).map(any(), eq(BlockRequestDtoResponse.class));
     }
@@ -141,7 +141,7 @@ class BlockRequestServiceTest {
         updatedResponse.setStatus(RequestStatus.APPROVED);
 
         when(requestRepo.findById(any(UUID.class))).thenReturn(Optional.of(request));
-        when(cardService.findByIdValid(card.getNumber())).thenReturn(card);
+        when(cardService.findByIdValidRole(card.getNumber())).thenReturn(card);
         when(userService.getCurrentUser()).thenReturn(user);
         when(cardService.save(any(Card.class))).thenReturn(card);
         when(requestRepo.save(any(BlockRequest.class))).thenReturn(updatedRequest);
@@ -153,7 +153,7 @@ class BlockRequestServiceTest {
         assertEquals(RequestStatus.APPROVED, result.getStatus());
         assertEquals(card.getNumber(), result.getCardId());
         verify(requestRepo).findById(any(UUID.class));
-        verify(cardService).findByIdValid(card.getNumber());
+        verify(cardService).findByIdValidRole(card.getNumber());
         verify(cardService).save(any(Card.class));
         verify(requestRepo).save(any(BlockRequest.class));
         verify(userService).hasRights(request.getUserId());
@@ -169,7 +169,7 @@ class BlockRequestServiceTest {
 
         assertThrows(NotFoundException.class, () -> blockRequestService.approveRequest(requestId));
         verify(requestRepo).findById(any(UUID.class));
-        verify(cardService, never()).findByIdValid(any(String.class));
+        verify(cardService, never()).findByIdValidRole(any(String.class));
         verify(modelMapper, never()).map(any(), eq(BlockRequestDtoResponse.class));
     }
 
@@ -181,7 +181,7 @@ class BlockRequestServiceTest {
 
         assertThrows(RequestAlreadyProcessedException.class, () -> blockRequestService.approveRequest(request.getId()));
         verify(requestRepo).findById(any(UUID.class));
-        verify(cardService, never()).findByIdValid(any(String.class));
+        verify(cardService, never()).findByIdValidRole(any(String.class));
         verify(modelMapper, never()).map(any(), eq(BlockRequestDtoResponse.class));
     }
 

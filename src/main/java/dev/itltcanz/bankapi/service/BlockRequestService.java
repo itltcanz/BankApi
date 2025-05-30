@@ -9,6 +9,7 @@ import dev.itltcanz.bankapi.entity.enumeration.RequestStatus;
 import dev.itltcanz.bankapi.exception.NotFoundException;
 import dev.itltcanz.bankapi.exception.RequestAlreadyProcessedException;
 import dev.itltcanz.bankapi.repository.BlockRequestRepo;
+import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -31,7 +32,7 @@ public class BlockRequestService {
     }
 
     public BlockRequestDtoResponse createRequest(BlockRequestDtoCreate dto) {
-        Card card = cardService.findByIdValid(dto.getCardId());
+        Card card = cardService.findByIdValidRole(dto.getCardId());
         if (card.getStatus().equals(CardStatus.BLOCKED)) {
             throw new IllegalStateException("The card has already been blocked");
         }
@@ -42,10 +43,11 @@ public class BlockRequestService {
         return modelMapper.map(savedRequest, BlockRequestDtoResponse.class);
     }
 
+    @Transactional
     public BlockRequestDtoResponse approveRequest(String requestId) {
         BlockRequest request = findByIdValid(requestId);
         checkRequestStatus(request.getStatus());
-        Card card = cardService.findByIdValid(request.getCardId());
+        Card card = cardService.findByIdValidRole(request.getCardId());
         card.setStatus(CardStatus.BLOCKED);
         request.setStatus(RequestStatus.APPROVED);
         request.setAdminId(userService.getCurrentUser().getId().toString());
@@ -55,6 +57,7 @@ public class BlockRequestService {
         return modelMapper.map(savedRequest, BlockRequestDtoResponse.class);
     }
 
+    @Transactional
     public BlockRequestDtoResponse rejectRequest(@NotNull String requestId) {
         var request = findByIdValid(requestId);
         checkRequestStatus(request.getStatus());

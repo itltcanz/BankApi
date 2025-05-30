@@ -264,11 +264,11 @@ class CardServiceTest {
     // Тесты для findByIdValid
     @Test
     @WithMockUser(username = "testuser", roles = "USER")
-    void findByIdValid_success_userOwner() {
+    void findByIdValid_Role_success_userOwner() {
         when(cardRepo.findById(card.getNumber())).thenReturn(Optional.of(card));
         when(userService.getCurrentUser()).thenReturn(user);
 
-        Card result = cardService.findByIdValid(card.getNumber());
+        Card result = cardService.findByIdValidRole(card.getNumber());
 
         assertNotNull(result);
         assertEquals(card.getNumber(), result.getNumber());
@@ -278,7 +278,7 @@ class CardServiceTest {
 
     @Test
     @WithMockUser(username = "testadmin", roles = "ADMIN")
-    void findByIdValid_success_admin() {
+    void findByIdValid_Role_success_admin() {
         User otherUser = new User();
         otherUser.setId(UUID.randomUUID());
         otherUser.setRole(Role.ROLE_USER);
@@ -289,7 +289,7 @@ class CardServiceTest {
         when(cardRepo.findById(card.getNumber())).thenReturn(Optional.of(card));
         when(userService.getCurrentUser()).thenReturn(admin);
 
-        Card result = cardService.findByIdValid(card.getNumber());
+        Card result = cardService.findByIdValidRole(card.getNumber());
 
         assertNotNull(result);
         assertEquals(card.getNumber(), result.getNumber());
@@ -299,19 +299,19 @@ class CardServiceTest {
 
     @Test
     @WithMockUser(username = "testuser", roles = "USER")
-    void findByIdValid_notFound_throwsNotFoundException() {
+    void findByIdValid_Role_notFound_throwsNotFoundException() {
         String cardId = "1234567890123456";
         when(cardRepo.findById(cardId)).thenReturn(Optional.empty());
         when(userService.getCurrentUser()).thenReturn(user);
 
-        assertThrows(NotFoundException.class, () -> cardService.findByIdValid(cardId));
+        assertThrows(NotFoundException.class, () -> cardService.findByIdValidRole(cardId));
         verify(cardRepo).findById(cardId);
         verify(userService).getCurrentUser();
     }
 
     @Test
     @WithMockUser(username = "testuser", roles = "USER")
-    void findByIdValid_accessDenied_throwsAccessDeniedException() {
+    void findByIdValid_Role_accessDenied_throwsAccessDeniedException() {
         User otherUser = new User();
         otherUser.setId(UUID.randomUUID());
         otherUser.setRole(Role.ROLE_USER);
@@ -319,7 +319,7 @@ class CardServiceTest {
         when(cardRepo.findById(card.getNumber())).thenReturn(Optional.of(card));
         when(userService.getCurrentUser()).thenReturn(user);
 
-        assertThrows(AccessDeniedException.class, () -> cardService.findByIdValid(card.getNumber()));
+        assertThrows(AccessDeniedException.class, () -> cardService.findByIdValidRole(card.getNumber()));
         verify(cardRepo).findById(card.getNumber());
         verify(userService).getCurrentUser();
     }

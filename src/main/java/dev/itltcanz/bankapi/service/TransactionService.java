@@ -11,9 +11,9 @@ import dev.itltcanz.bankapi.repository.TransactionRepo;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +26,7 @@ public class TransactionService {
     public TransactionDtoResponse createTransaction(TransactionDtoCreate transactionDto) {
         var transaction = modelMapper.map(transactionDto, Transaction.class);
 
-        var senderCard = cardService.findByIdValid(transaction.getSenderCardId());
+        var senderCard = cardService.findByIdValidRole(transaction.getSenderCardId());
         var receiverCard = cardService.findByIdValid(transaction.getReceiverCardId());
 
         if (!senderCard.getStatus().equals(CardStatus.ACTIVE) ||
@@ -41,10 +41,15 @@ public class TransactionService {
         senderCard.setBalance(senderCard.getBalance().subtract(transaction.getAmount()));
         receiverCard.setBalance(receiverCard.getBalance().add(transaction.getAmount()));
         transaction.setStatus(TransactionStatus.COMPLETED);
-        transaction.setCreatedAt(LocalDateTime.now());
         cardService.save(senderCard);
         cardService.save(receiverCard);
         var savedTransaction = transactionRepo.save(transaction);
         return modelMapper.map(savedTransaction, TransactionDtoResponse.class);
+    }
+
+    public Page<TransactionDtoResponse> getTransactions(PageRequest pageable) {
+        var transactions = transactionRepo.findAll(pageable);
+        return transactions
+            .map(transaction -> modelMapper.map(transaction, TransactionDtoResponse.class));
     }
 }

@@ -16,10 +16,10 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class TransactionDtoCreate {
     @NotBlank
-    @Pattern(regexp = "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", message = "Invalid UUID format")
+    @Pattern(regexp = "^[0-9]{16}", message = "Invalid card number format")
     private String senderCardId;
     @NotBlank
-    @Pattern(regexp = "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", message = "Invalid UUID format")
+    @Pattern(regexp = "^[0-9]{16}", message = "Invalid card number format")
     private String receiverCardId;
     @PositiveOrZero
     private BigDecimal amount;
