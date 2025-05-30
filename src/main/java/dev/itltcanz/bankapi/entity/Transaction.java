@@ -27,8 +27,8 @@ public class Transaction {
     private String senderCardId;
     @Column(nullable = false, updatable = false)
     private BigDecimal amount;
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false, updatable = false)
+    @Enumerated(EnumType.STRING)
     private TransactionStatus status = TransactionStatus.PENDING;
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();

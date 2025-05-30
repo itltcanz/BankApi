@@ -25,7 +25,7 @@ public class UserController {
     @Secured("ROLE_ADMIN")
     @Operation(
         summary = "Retrieve users with pagination",
-        description = "Fetches a paginated list of users. Requires admin privileges."
+        description = "Fetches a paginated list of users. Requires admin privileges"
     )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Users retrieved successfully"),

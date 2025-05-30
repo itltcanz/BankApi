@@ -2,7 +2,7 @@ package dev.itltcanz.bankapi.config;
 
 import dev.itltcanz.bankapi.security.JwtExceptionFilter;
 import dev.itltcanz.bankapi.security.JwtFilter;
-import dev.itltcanz.bankapi.service.CustomUserDetailsService;
+import dev.itltcanz.bankapi.security.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,6 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -28,18 +29,13 @@ public class SecurityConfig {
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtFilter jwtFilter;
     private final JwtExceptionFilter jwtExceptionFilter;
-
-    private final String[] REQUEST_MATCHES = {
-        "/v1/auth/**",
-        "/swagger-ui/**",
-        "/api-docs/**"
-    };
+    private final RequestMatcher permitRequests;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(request -> request
-                .requestMatchers(REQUEST_MATCHES)
+                .requestMatchers(permitRequests)
                 .permitAll()
                 .anyRequest().authenticated()
             )

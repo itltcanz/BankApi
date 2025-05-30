@@ -29,7 +29,7 @@ public class TransactionController {
     @PostMapping
     @Operation(
         summary = "Create a new transaction",
-        description = "Initiates a new transaction with the provided details."
+        description = "Initiates a new transaction with the provided details"
     )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Transaction created successfully"),

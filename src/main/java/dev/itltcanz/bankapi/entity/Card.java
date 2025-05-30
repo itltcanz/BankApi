@@ -22,6 +22,7 @@ public class Card {
     @Column(nullable = false)
     private YearMonth validityPeriod;
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private CardStatus status;
     @Column(nullable = false)
     private BigDecimal balance;

@@ -57,7 +57,7 @@ class CardServiceTest {
     void setUp() {
         user = new User();
         user.setId(UUID.randomUUID());
-        user.setRole(Role.ROLE_USER.toString());
+        user.setRole(Role.ROLE_USER);
 
         card = new Card();
         card.setNumber("4561261212345467");
@@ -67,7 +67,7 @@ class CardServiceTest {
 
         response = new CardDtoResponse();
         response.setNumber(card.getNumber());
-        response.setStatus(card.getStatus());
+        response.setStatus(card.getStatus().toString());
         response.setOwnerId(user.getId().toString());
         response.setBalance(card.getBalance());
 
@@ -93,7 +93,7 @@ class CardServiceTest {
 
         assertNotNull(result);
         assertEquals(card.getNumber(), result.getNumber());
-        assertEquals(CardStatus.ACTIVE, result.getStatus());
+        assertEquals(CardStatus.ACTIVE.toString(), result.getStatus());
         verify(modelMapper).map(any(CardDtoCreate.class), any(Card.class));
         verify(cardRepo).save(any(Card.class));
         verify(modelMapper).map(card, CardDtoResponse.class);
@@ -148,7 +148,7 @@ class CardServiceTest {
     void deleteCard_accessDenied_throwsAccessDeniedException() {
         User otherUser = new User();
         otherUser.setId(UUID.randomUUID());
-        otherUser.setRole(Role.ROLE_USER.toString());
+        otherUser.setRole(Role.ROLE_USER);
         card.setOwner(otherUser);
         when(cardRepo.findById(card.getNumber())).thenReturn(Optional.of(card));
         when(userService.getCurrentUser()).thenReturn(user);
@@ -281,11 +281,11 @@ class CardServiceTest {
     void findByIdValid_success_admin() {
         User otherUser = new User();
         otherUser.setId(UUID.randomUUID());
-        otherUser.setRole(Role.ROLE_USER.toString());
+        otherUser.setRole(Role.ROLE_USER);
         card.setOwner(otherUser);
         User admin = new User();
         admin.setId(UUID.randomUUID());
-        admin.setRole(Role.ROLE_ADMIN.toString());
+        admin.setRole(Role.ROLE_ADMIN);
         when(cardRepo.findById(card.getNumber())).thenReturn(Optional.of(card));
         when(userService.getCurrentUser()).thenReturn(admin);
 
@@ -314,7 +314,7 @@ class CardServiceTest {
     void findByIdValid_accessDenied_throwsAccessDeniedException() {
         User otherUser = new User();
         otherUser.setId(UUID.randomUUID());
-        otherUser.setRole(Role.ROLE_USER.toString());
+        otherUser.setRole(Role.ROLE_USER);
         card.setOwner(otherUser);
         when(cardRepo.findById(card.getNumber())).thenReturn(Optional.of(card));
         when(userService.getCurrentUser()).thenReturn(user);

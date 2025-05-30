@@ -34,7 +34,7 @@ public class UserService {
         }
         var user = modelMapper.map(userDto, User.class);
         user.setPassword(encoder.encode(user.getPassword()));
-        user.setRole(Role.ROLE_USER.toString());
+        user.setRole(Role.ROLE_USER);
         var savedUser = userRepo.save(user);
         return modelMapper.map(savedUser, UserDtoResponse.class);
     }
@@ -56,8 +56,13 @@ public class UserService {
 
     public void hasRights(String compareUserId) {
         var currentUser = getCurrentUser();
-        if (!currentUser.getRole().equals(Role.ROLE_ADMIN.toString()) && !currentUser.getId().equals(UUID.fromString(compareUserId))) {
+        if (!currentUser.getRole().equals(Role.ROLE_ADMIN) && !currentUser.getId().equals(UUID.fromString(compareUserId))) {
             throw new AccessDeniedException("Access denied");
         }
+    }
+
+    public User getUserById(String ownerId) {
+        return userRepo.findById(UUID.fromString(ownerId))
+            .orElseThrow(() -> new NotFoundException("A user with id " + ownerId + " was not found"));
     }
 }

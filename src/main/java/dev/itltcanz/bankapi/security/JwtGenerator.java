@@ -1,4 +1,4 @@
-package dev.itltcanz.bankapi.service;
+package dev.itltcanz.bankapi.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.function.Function;
 
 @Service
-public class JwtService {
+public class JwtGenerator {
     @Value("${jwt.secret}")
     private String secret;
 

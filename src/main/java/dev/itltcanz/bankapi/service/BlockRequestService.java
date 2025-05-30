@@ -32,7 +32,7 @@ public class BlockRequestService {
 
     public BlockRequestDtoResponse createRequest(BlockRequestDtoCreate dto) {
         Card card = cardService.findByIdValid(dto.getCardId());
-        if (card.getStatus() == CardStatus.BLOCKED) {
+        if (card.getStatus().equals(CardStatus.BLOCKED)) {
             throw new IllegalStateException("The card has already been blocked");
         }
         BlockRequest request = new BlockRequest();

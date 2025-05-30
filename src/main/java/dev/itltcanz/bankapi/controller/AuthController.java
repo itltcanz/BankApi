@@ -2,7 +2,7 @@ package dev.itltcanz.bankapi.controller;
 
 import dev.itltcanz.bankapi.dto.user.UserDtoRegistration;
 import dev.itltcanz.bankapi.dto.user.UserDtoResponse;
-import dev.itltcanz.bankapi.service.JwtService;
+import dev.itltcanz.bankapi.security.JwtGenerator;
 import dev.itltcanz.bankapi.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -24,12 +24,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final UserService userService;
-    private final JwtService jwtService;
+    private final JwtGenerator jwtGenerator;
 
     @PostMapping("/register")
     @Operation(
         summary = "Register a new user",
-        description = "Creates a new user account with the provided credentials."
+        description = "Creates a new user account with the provided credentials"
     )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "User registered successfully"),
@@ -46,7 +46,7 @@ public class AuthController {
     @PostMapping("/login")
     @Operation(
         summary = "Authenticate a user",
-        description = "Authenticates a user and returns a JWT token."
+        description = "Authenticates a user and returns a JWT token"
     )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Login successful, JWT token returned"),
@@ -56,6 +56,6 @@ public class AuthController {
         @Parameter(description = "User login credentials", required = true)
         @RequestBody @Valid UserDtoRegistration userDto) {
         userService.verify(userDto);
-        return ResponseEntity.ok(jwtService.generateToken(userDto.getUsername()));
+        return ResponseEntity.ok(jwtGenerator.generateToken(userDto.getUsername()));
     }
 }

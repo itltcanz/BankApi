@@ -1,4 +1,4 @@
-package dev.itltcanz.bankapi.service;
+package dev.itltcanz.bankapi.security;
 
 import dev.itltcanz.bankapi.repository.UserRepo;
 import lombok.RequiredArgsConstructor;

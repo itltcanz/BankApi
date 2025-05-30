@@ -28,7 +28,7 @@ public class BlockRequestController {
     @PostMapping
     @Operation(
         summary = "Create a card block request",
-        description = "Submits a request to block a specified card."
+        description = "Submits a request to block a specified card"
     )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Block request created successfully"),
@@ -47,7 +47,7 @@ public class BlockRequestController {
     @Secured("ROLE_ADMIN")
     @Operation(
         summary = "Approve a card block request",
-        description = "Allows an administrator to approve a card block request, blocking the specified card."
+        description = "Allows an administrator to approve a card block request, blocking the specified card"
     )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Block request approved, card blocked"),
@@ -67,7 +67,7 @@ public class BlockRequestController {
     @Secured("ROLE_ADMIN")
     @Operation(
         summary = "Reject a card block request",
-        description = "Allows an administrator to reject a card block request."
+        description = "Allows an administrator to reject a card block request"
     )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Block request rejected"),
@@ -86,7 +86,7 @@ public class BlockRequestController {
     @GetMapping("/{requestId}")
     @Operation(
         summary = "Retrieve a card block request",
-        description = "Fetches details of a card block request by its ID."
+        description = "Fetches details of a card block request by its ID"
     )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Block request found"),

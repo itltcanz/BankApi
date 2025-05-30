@@ -29,4 +29,4 @@ logging:
 
 jwt:
   secret: 53A73E5F1C4E0A2D3B5F2D784E6A1B4274OMH4TY1F6E5C3A596D635A75327855
-  access-token-validity: 1800000 # 30 minutes
+  access-token-validity: 36000000 # 10 hour

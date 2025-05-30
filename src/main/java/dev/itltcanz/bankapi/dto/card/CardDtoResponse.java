@@ -1,6 +1,7 @@
 package dev.itltcanz.bankapi.dto.card;
 
-import dev.itltcanz.bankapi.entity.enumeration.CardStatus;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import dev.itltcanz.bankapi.util.YearMonthMMYYSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,7 +17,8 @@ import java.time.YearMonth;
 public class CardDtoResponse {
     private String number;
     private String ownerId;
+    @JsonSerialize(using = YearMonthMMYYSerializer.class)
     private YearMonth validityPeriod;
     private BigDecimal balance;
-    private CardStatus status;
+    private String status;
 }

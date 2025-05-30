@@ -34,7 +34,7 @@ public class CardController {
     @Secured("ROLE_ADMIN")
     @Operation(
         summary = "Create a new card",
-        description = "Creates a new card with the provided details. Requires admin privileges."
+        description = "Creates a new card with the provided details. Requires admin privileges"
     )
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Card created successfully"),
@@ -43,13 +43,19 @@ public class CardController {
         @ApiResponse(responseCode = "403", description = "Admin access required")
     })
     public ResponseEntity<CardDtoResponse> createCard(
-        @Parameter(description = "Card creation details", required = true)
-        @RequestBody @Valid CardDtoCreate cardDto) {
+        @Parameter(description = "Card creation details", required = true) @RequestBody @Valid CardDtoCreate cardDto) {
         var cardResponse = cardService.createCard(cardDto);
         return new ResponseEntity<>(cardResponse, HttpStatus.CREATED);
     }
 
     @GetMapping()
+    @Operation(
+        summary = "Get a list of cards",
+        description = "Sends a list of the user's cards or all the cards if the method is called by the administrator"
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "The cards have been sent successfully")
+    })
     public ResponseEntity<Page<CardDtoResponse>> getCards(
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "10") int size
@@ -80,7 +86,7 @@ public class CardController {
     @Secured("ROLE_ADMIN")
     @Operation(
         summary = "Update a card",
-        description = "Fully updates a card's details by its ID. Requires admin privileges."
+        description = "Fully updates a card's details by its ID. Requires admin privileges"
     )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Card updated successfully"),
@@ -102,7 +108,7 @@ public class CardController {
     @Secured("ROLE_ADMIN")
     @Operation(
         summary = "Partially update a card",
-        description = "Partially updates a card's details by its ID. Requires admin privileges."
+        description = "Partially updates a card's details by its ID. Requires admin privileges"
     )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Card updated successfully"),
@@ -124,7 +130,7 @@ public class CardController {
     @Secured("ROLE_ADMIN")
     @Operation(
         summary = "Delete a card",
-        description = "Deletes a card by its ID. Requires admin privileges."
+        description = "Deletes a card by its ID. Requires admin privileges"
     )
     @ApiResponses({
         @ApiResponse(responseCode = "204", description = "Card deleted successfully"),

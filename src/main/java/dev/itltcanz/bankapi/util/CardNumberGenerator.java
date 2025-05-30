@@ -3,7 +3,6 @@ package dev.itltcanz.bankapi.util;
 import java.security.SecureRandom;
 
 public class CardNumberGenerator {
-
     private static final String BANK_IIN = "400000";
     private static final int MAX_ACCOUNT_NUMBER = 999999999;
     private static final SecureRandom random = new SecureRandom();

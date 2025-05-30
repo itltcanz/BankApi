@@ -26,17 +26,16 @@ public class CardService {
     private final UserService userService;
 
     public CardDtoResponse createCard(CardDtoCreate cardDto) {
-        var card = new Card();
-        card.setNumber(CardNumberGenerator.generateCardNumber());
-        card.setStatus(CardStatus.ACTIVE);
-        modelMapper.map(cardDto, card);
+        var owner = userService.getUserById(cardDto.getOwnerId());
+        var number = generateCardNumber();
+        var card = new Card(number, owner, cardDto.getValidityPeriod(), CardStatus.ACTIVE, cardDto.getBalance());
         var savedCard = cardRepo.save(card);
         return modelMapper.map(savedCard, CardDtoResponse.class);
     }
 
     public Page<CardDtoResponse> getCards(PageRequest pageable) {
-        return cardRepo.findAll(pageable)
-            .map(card -> modelMapper.map(card, CardDtoResponse.class));
+        var cards = cardRepo.findAll(pageable);
+        return cards.map(card -> modelMapper.map(card, CardDtoResponse.class));
     }
 
     public void deleteCard(String cardId) {
@@ -68,7 +67,7 @@ public class CardService {
         var currentUser = userService.getCurrentUser();
         var card = cardRepo.findById(cardId)
             .orElseThrow(() -> new NotFoundException("A card with the number " + cardId + " has not been found."));
-        if (!card.getOwner().getId().equals(currentUser.getId()) && !currentUser.getRole().equals(Role.ROLE_ADMIN.toString())) {
+        if (!card.getOwner().getId().equals(currentUser.getId()) && !currentUser.getRole().equals(Role.ROLE_ADMIN)) {
             throw new AccessDeniedException("The card parameters are specified incorrectly");
         }
         return card;
@@ -77,5 +76,13 @@ public class CardService {
     @SuppressWarnings("UnusedReturnValue")
     public Card save(Card card) {
         return cardRepo.save(card);
+    }
+
+    public String generateCardNumber() {
+        String cardNumber;
+        do {
+            cardNumber = CardNumberGenerator.generateCardNumber();
+        } while (cardRepo.existsByNumber(cardNumber));
+        return cardNumber;
     }
 }

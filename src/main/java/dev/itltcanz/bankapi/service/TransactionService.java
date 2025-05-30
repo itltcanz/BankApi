@@ -29,7 +29,8 @@ public class TransactionService {
         var senderCard = cardService.findByIdValid(transaction.getSenderCardId());
         var receiverCard = cardService.findByIdValid(transaction.getReceiverCardId());
 
-        if (senderCard.getStatus() != CardStatus.ACTIVE || receiverCard.getStatus() != CardStatus.ACTIVE) {
+        if (!senderCard.getStatus().equals(CardStatus.ACTIVE) ||
+            !receiverCard.getStatus().equals(CardStatus.ACTIVE)) {
             throw new InactiveCardException("One of the cards is inactive");
         }
 
