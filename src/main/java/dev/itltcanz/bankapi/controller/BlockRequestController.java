@@ -11,10 +11,20 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/v1/block-requests")
@@ -23,80 +33,95 @@ import org.springframework.web.bind.annotation.*;
 @SecurityRequirement(name = "BearerAuth")
 public class BlockRequestController {
 
-    private final BlockRequestService blockRequestService;
+  private final BlockRequestService blockRequestService;
 
-    @PostMapping
-    @Operation(
-        summary = "Create a card block request",
-        description = "Submits a request to block a specified card"
-    )
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Block request created successfully"),
-        @ApiResponse(responseCode = "400", description = "Invalid request data"),
-        @ApiResponse(responseCode = "404", description = "Card or user not found"),
-        @ApiResponse(responseCode = "401", description = "Unauthorized access")
-    })
-    public ResponseEntity<BlockRequestDtoResponse> createRequest(
-        @Parameter(description = "Block request details", required = true)
-        @RequestBody @Valid BlockRequestDtoCreate dto) {
-        BlockRequestDtoResponse response = blockRequestService.createRequest(dto);
-        return ResponseEntity.ok(response);
-    }
+  @PostMapping
+  @Operation(summary = "Create a card block request", description = "Submits a request to block a specified card")
+  @ApiResponses({
+      @ApiResponse(responseCode = "200", description = "Block request created successfully"),
+      @ApiResponse(responseCode = "400", description = "Invalid request data"),
+      @ApiResponse(responseCode = "404", description = "Card or user not found"),
+      @ApiResponse(responseCode = "401", description = "Unauthorized access")})
+  public ResponseEntity<BlockRequestDtoResponse> createRequest(
+      @Parameter(description = "Block request details", required = true) @RequestBody @Valid BlockRequestDtoCreate dto) {
+    var response = blockRequestService.createRequest(dto);
+    return ResponseEntity.ok(response);
+  }
 
-    @PatchMapping("/{requestId}/approve")
-    @Secured("ROLE_ADMIN")
-    @Operation(
-        summary = "Approve a card block request",
-        description = "Allows an administrator to approve a card block request, blocking the specified card"
-    )
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Block request approved, card blocked"),
-        @ApiResponse(responseCode = "400", description = "Invalid request ID"),
-        @ApiResponse(responseCode = "404", description = "Block request or card not found"),
-        @ApiResponse(responseCode = "401", description = "Unauthorized access"),
-        @ApiResponse(responseCode = "403", description = "Admin access required")
-    })
-    public ResponseEntity<BlockRequestDtoResponse> approveRequest(
-        @Parameter(description = "Block request ID", required = true)
-        @PathVariable @NotNull String requestId) {
-        BlockRequestDtoResponse response = blockRequestService.approveRequest(requestId);
-        return ResponseEntity.ok(response);
-    }
+  @GetMapping("/all")
+  @Secured("ROLE_ADMIN")
+  @Operation(summary = "Retrieve all card block requests", description = "Returns a paginated list of all card block requests for admin users")
+  @ApiResponses({
+      @ApiResponse(responseCode = "200", description = "Block requests retrieved successfully"),
+      @ApiResponse(responseCode = "401", description = "Unauthorized access"),
+      @ApiResponse(responseCode = "403", description = "Admin access required")})
+  public ResponseEntity<Page<BlockRequestDtoResponse>> getRequestsAdmin(
+      @Parameter(description = "Page number (0-based)", example = "0") @RequestParam(defaultValue = "0") int page,
+      @Parameter(description = "Number of items per page", example = "10") @RequestParam(defaultValue = "10") int size,
+      @Parameter(description = "Field to sort by", example = "status") @RequestParam(defaultValue = "status") String sortBy,
+      @Parameter(description = "Sort direction (asc/desc)", example = "desc") @RequestParam(defaultValue = "desc") String direction) {
+    var sort = Sort.by(Sort.Direction.fromString(direction), sortBy);
+    var pageable = PageRequest.of(page, size, sort);
+    var response = blockRequestService.getRequestsAdmin(pageable);
+    return ResponseEntity.ok(response);
+  }
 
-    @PatchMapping("/{requestId}/reject")
-    @Secured("ROLE_ADMIN")
-    @Operation(
-        summary = "Reject a card block request",
-        description = "Allows an administrator to reject a card block request"
-    )
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Block request rejected"),
-        @ApiResponse(responseCode = "400", description = "Invalid request ID"),
-        @ApiResponse(responseCode = "404", description = "Block request not found"),
-        @ApiResponse(responseCode = "401", description = "Unauthorized access"),
-        @ApiResponse(responseCode = "403", description = "Admin access required")
-    })
-    public ResponseEntity<BlockRequestDtoResponse> rejectRequest(
-        @Parameter(description = "Block request ID", required = true)
-        @PathVariable @NotNull String requestId) {
-        BlockRequestDtoResponse response = blockRequestService.rejectRequest(requestId);
-        return ResponseEntity.ok(response);
-    }
+  @GetMapping("/my")
+  @Operation(summary = "Retrieve user's card block requests", description = "Returns a paginated list of the authenticated user's card block requests")
+  @ApiResponses({
+      @ApiResponse(responseCode = "200", description = "Block requests retrieved successfully"),
+      @ApiResponse(responseCode = "401", description = "Unauthorized access")})
+  public ResponseEntity<Page<BlockRequestDtoResponse>> getRequestsUser(
+      @Parameter(description = "Page number (0-based)", example = "0") @RequestParam(defaultValue = "0") int page,
 
-    @GetMapping("/{requestId}")
-    @Operation(
-        summary = "Retrieve a card block request",
-        description = "Fetches details of a card block request by its ID"
-    )
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Block request found"),
-        @ApiResponse(responseCode = "404", description = "Block request not found"),
-        @ApiResponse(responseCode = "401", description = "Unauthorized access")
-    })
-    public ResponseEntity<BlockRequestDtoResponse> getRequest(
-        @Parameter(description = "Block request ID", required = true)
-        @PathVariable @NotNull String requestId) {
-        BlockRequestDtoResponse response = blockRequestService.getRequest(requestId);
-        return ResponseEntity.ok(response);
-    }
+      @Parameter(description = "Number of items per page", example = "10") @RequestParam(defaultValue = "10") int size,
+
+      @Parameter(description = "Field to sort by", example = "status") @RequestParam(defaultValue = "status") String sortBy,
+
+      @Parameter(description = "Sort direction (asc/desc)", example = "desc") @RequestParam(defaultValue = "desc") String direction) {
+    var sort = Sort.by(Sort.Direction.fromString(direction), sortBy);
+    var pageable = PageRequest.of(page, size, sort);
+    var response = blockRequestService.getRequestsUser(pageable);
+    return ResponseEntity.ok(response);
+  }
+
+  @GetMapping("/{requestId}")
+  @Operation(summary = "Retrieve a card block request", description = "Fetches details of a card block request by its ID")
+  @ApiResponses({@ApiResponse(responseCode = "200", description = "Block request found"),
+      @ApiResponse(responseCode = "404", description = "Block request not found"),
+      @ApiResponse(responseCode = "401", description = "Unauthorized access")})
+  public ResponseEntity<BlockRequestDtoResponse> getRequest(
+      @Parameter(description = "Block request ID", required = true) @PathVariable @NotNull String requestId) {
+    var response = blockRequestService.getRequest(requestId);
+    return ResponseEntity.ok(response);
+  }
+
+  @PatchMapping("/{requestId}/approve")
+  @Secured("ROLE_ADMIN")
+  @Operation(summary = "Approve a card block request", description = "Allows an administrator to approve a card block request, blocking the specified card")
+  @ApiResponses({
+      @ApiResponse(responseCode = "200", description = "Block request approved, card blocked"),
+      @ApiResponse(responseCode = "400", description = "Invalid request ID"),
+      @ApiResponse(responseCode = "404", description = "Block request or card not found"),
+      @ApiResponse(responseCode = "401", description = "Unauthorized access"),
+      @ApiResponse(responseCode = "403", description = "Admin access required")})
+  public ResponseEntity<BlockRequestDtoResponse> approveRequest(
+      @Parameter(description = "Block request ID", required = true) @PathVariable @NotNull String requestId) {
+    var response = blockRequestService.approveRequest(requestId);
+    return ResponseEntity.ok(response);
+  }
+
+  @PatchMapping("/{requestId}/reject")
+  @Secured("ROLE_ADMIN")
+  @Operation(summary = "Reject a card block request", description = "Allows an administrator to reject a card block request")
+  @ApiResponses({@ApiResponse(responseCode = "200", description = "Block request rejected"),
+      @ApiResponse(responseCode = "400", description = "Invalid request ID"),
+      @ApiResponse(responseCode = "404", description = "Block request not found"),
+      @ApiResponse(responseCode = "401", description = "Unauthorized access"),
+      @ApiResponse(responseCode = "403", description = "Admin access required")})
+  public ResponseEntity<BlockRequestDtoResponse> rejectRequest(
+      @Parameter(description = "Block request ID", required = true) @PathVariable @NotNull String requestId) {
+    var response = blockRequestService.rejectRequest(requestId);
+    return ResponseEntity.ok(response);
+  }
 }

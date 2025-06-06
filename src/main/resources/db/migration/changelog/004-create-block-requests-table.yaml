@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 004
+      id: create-block-requests-table
       author: itltcanz
       changes:
         - createTable:
@@ -11,19 +11,20 @@ databaseChangeLog:
                   type: uuid
                   constraints:
                     primaryKey: true
+                    nullable: false
               - column:
                   name: card_id
-                  type: varchar(19)
+                  type: varchar(16)
                   constraints:
                     nullable: false
-                    foreignKeyName: fk_block_requests_card
+                    foreignKeyName: fk_block_request_card
                     references: cards(number)
               - column:
                   name: user_id
                   type: uuid
                   constraints:
                     nullable: false
-                    foreignKeyName: fk_block_requests_user
+                    foreignKeyName: fk_block_request_user
                     references: users(id)
               - column:
                   name: status
@@ -34,6 +35,7 @@ databaseChangeLog:
               - column:
                   name: created_at
                   type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
                   constraints:
                     nullable: false
               - column:
@@ -43,12 +45,5 @@ databaseChangeLog:
                   name: admin_id
                   type: uuid
                   constraints:
-                    foreignKeyName: fk_block_requests_admin
+                    foreignKeyName: fk_block_request_admin
                     references: users(id)
-        - createIndex:
-            tableName: block_requests
-            columns:
-              - column:
-                  name: card_id
-              - column:
-                  name: user_id
