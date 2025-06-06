@@ -17,7 +17,7 @@ Before starting, ensure the following tools are installed:
 - [JDK 17](https://adoptium.net/temurin/releases/)
 - [Maven](https://maven.apache.org/download.cgi)
 
-### Installation
+### Installation and Launch
 
 1. Clone the repository:
 
@@ -31,16 +31,6 @@ Before starting, ensure the following tools are installed:
     ```bash
     docker compose up -d
     ```
-
-   Installation is now complete.
-
-### Launch
-
-Run the project using the built JAR file:
-
-   ```bash
-   java -jar target/BankApi-1.0.0.jar
-   ```
 
 ## Usage
 
