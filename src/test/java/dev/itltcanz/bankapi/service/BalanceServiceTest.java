@@ -12,6 +12,9 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import dev.itltcanz.bankapi.entity.Card;
 import dev.itltcanz.bankapi.entity.enumeration.CardStatus;
 import dev.itltcanz.bankapi.exception.InsufficientFundsException;
+import dev.itltcanz.bankapi.service.impl.BalanceServiceImpl;
+import dev.itltcanz.bankapi.service.impl.CardCheckServiceImpl;
+import dev.itltcanz.bankapi.service.impl.CardServiceImpl;
 import java.math.BigDecimal;
 import java.time.YearMonth;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,13 +28,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class BalanceServiceTest {
 
   @Mock
-  private CardService cardService;
+  private CardServiceImpl cardService;
 
   @Mock
-  private CardCheckService cardCheckService;
+  private CardCheckServiceImpl cardCheckService;
 
   @InjectMocks
-  private BalanceService balanceService;
+  private BalanceServiceImpl balanceService;
 
   private Card senderCard;
   private Card receiverCard;

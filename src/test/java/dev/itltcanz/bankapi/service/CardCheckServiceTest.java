@@ -8,6 +8,7 @@ import dev.itltcanz.bankapi.entity.Card;
 import dev.itltcanz.bankapi.entity.enumeration.CardStatus;
 import dev.itltcanz.bankapi.exception.InactiveCardException;
 import dev.itltcanz.bankapi.exception.InsufficientFundsException;
+import dev.itltcanz.bankapi.service.impl.CardCheckServiceImpl;
 import java.math.BigDecimal;
 import java.time.YearMonth;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,12 +19,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class CardCheckServiceTest {
 
-  private CardCheckService cardCheckService;
+  private CardCheckServiceImpl cardCheckService;
   private Card card;
 
   @BeforeEach
   void setUp() {
-    cardCheckService = new CardCheckService();
+    cardCheckService = new CardCheckServiceImpl();
     card = new Card("1234567890123456", null, YearMonth.now().plusYears(1), CardStatus.ACTIVE,
         new BigDecimal("100"));
   }

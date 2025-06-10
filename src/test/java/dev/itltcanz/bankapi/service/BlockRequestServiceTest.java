@@ -20,6 +20,10 @@ import dev.itltcanz.bankapi.entity.enumeration.RequestStatus;
 import dev.itltcanz.bankapi.exception.NotFoundException;
 import dev.itltcanz.bankapi.exception.RequestAlreadyProcessedException;
 import dev.itltcanz.bankapi.repository.BlockRequestRepo;
+import dev.itltcanz.bankapi.service.impl.AuthServiceImpl;
+import dev.itltcanz.bankapi.service.impl.BlockRequestServiceImpl;
+import dev.itltcanz.bankapi.service.impl.CardServiceImpl;
+import dev.itltcanz.bankapi.service.impl.PermissionServiceImpl;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,15 +41,15 @@ class BlockRequestServiceTest {
   @Mock
   private BlockRequestRepo requestRepo;
   @Mock
-  private CardService cardService;
+  private CardServiceImpl cardService;
   @Mock
-  private AuthenticationService authService;
+  private AuthServiceImpl authService;
   @Mock
-  private PermissionService permissionService;
+  private PermissionServiceImpl permissionService;
   @Mock
   private ModelMapper modelMapper;
   @InjectMocks
-  private BlockRequestService blockRequestService;
+  private BlockRequestServiceImpl blockRequestService;
 
   private Card card;
   private User user;

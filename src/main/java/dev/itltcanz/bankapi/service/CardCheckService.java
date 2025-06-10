@@ -6,13 +6,11 @@ import dev.itltcanz.bankapi.exception.InactiveCardException;
 import dev.itltcanz.bankapi.exception.InsufficientFundsException;
 import java.math.BigDecimal;
 import java.time.YearMonth;
-import org.springframework.stereotype.Service;
 
 /**
  * Service for validating card properties before operations.
  */
-@Service
-public class CardCheckService {
+public interface CardCheckService {
 
   /**
    * Checks if the card's validity period is not expired.
@@ -20,11 +18,7 @@ public class CardCheckService {
    * @param validityPeriod The card's validity period.
    * @throws InactiveCardException if the card is expired.
    */
-  public void checkValidityPeriod(YearMonth validityPeriod) {
-    if (validityPeriod.isBefore(YearMonth.now())) {
-      throw new InactiveCardException("Incorrect card expiration date");
-    }
-  }
+  void checkValidityPeriod(YearMonth validityPeriod);
 
   /**
    * Checks if the card is active.
@@ -32,11 +26,7 @@ public class CardCheckService {
    * @param cardStatus The card's status.
    * @throws InactiveCardException if the card is not active.
    */
-  public void checkStatus(CardStatus cardStatus) {
-    if (!cardStatus.equals(CardStatus.ACTIVE)) {
-      throw new InactiveCardException("The card is inactive");
-    }
-  }
+  void checkStatus(CardStatus cardStatus);
 
   /**
    * Checks if the sender card has sufficient funds for a transfer.
@@ -45,10 +35,5 @@ public class CardCheckService {
    * @param amount The amount to transfer.
    * @throws InsufficientFundsException if the card has insufficient funds.
    */
-  public void checkBalanceBeforeTransfer(Card card, BigDecimal amount) {
-    if (card.getBalance().compareTo(amount) < 0) {
-      throw new InsufficientFundsException(
-          "There are insufficient funds on the " + card.getNumber() + " card");
-    }
-  }
+  void checkBalanceBeforeTransfer(Card card, BigDecimal amount);
 }

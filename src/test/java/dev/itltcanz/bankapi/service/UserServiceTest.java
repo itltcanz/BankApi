@@ -17,6 +17,7 @@ import dev.itltcanz.bankapi.entity.enumeration.Role;
 import dev.itltcanz.bankapi.exception.NotFoundException;
 import dev.itltcanz.bankapi.exception.UsernameAlreadyUseException;
 import dev.itltcanz.bankapi.repository.UserRepo;
+import dev.itltcanz.bankapi.service.impl.UserServiceImpl;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -44,7 +45,7 @@ class UserServiceTest {
   private PasswordEncoder passwordEncoder;
 
   @InjectMocks
-  private UserService userService;
+  private UserServiceImpl userService;
 
   private User user;
   private UserDtoCreate userDtoCreate;

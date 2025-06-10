@@ -1,11 +1,11 @@
 server:
-  port: 8080
+  port: ${SERVER_PORT:8080}
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/bank
-    username: postgres
-    password: pass
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/bank}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:pass}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -16,6 +16,14 @@ spring:
     change-log: classpath:db/migration/db.changelog-master.yaml
     enabled: true
     default-schema: public
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:localhost}
+      port: ${SPRING_DATA_REDIS_PORT:6379}
+  cache:
+    type: redis
+    redis:
+      time-to-live: ${SPRING_CACHE_REDIS_TIME_TO_LIVE:300000}
 
 springdoc:
   api-docs:
@@ -28,5 +36,5 @@ logging:
   config: classpath:logback-spring.xml
 
 jwt:
-  secret: 53A73E5F1C4E0A2D3B5F2D784E6A1B4274OMH4TY1F6E5C3A596D635A75327855
-  access-token-validity: 36000000 # 10 hour
+  secret: ${JWT_SECRET:53A73E5F1C4E0A2D3B5F2D784E6A1B4274OMH4TY1F6E5C3A596D635A75327855}
+  access-token-validity: ${JWT_ACCESS_TOKEN_VALIDITY:3600000}

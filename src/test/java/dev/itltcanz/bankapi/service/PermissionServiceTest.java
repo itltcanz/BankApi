@@ -8,6 +8,8 @@ import static org.mockito.Mockito.when;
 
 import dev.itltcanz.bankapi.entity.User;
 import dev.itltcanz.bankapi.entity.enumeration.Role;
+import dev.itltcanz.bankapi.service.impl.AuthServiceImpl;
+import dev.itltcanz.bankapi.service.impl.PermissionServiceImpl;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,10 +23,10 @@ import org.springframework.security.access.AccessDeniedException;
 class PermissionServiceTest {
 
   @Mock
-  private AuthenticationService authService;
+  private AuthServiceImpl authService;
 
   @InjectMocks
-  private PermissionService permissionService;
+  private PermissionServiceImpl permissionService;
 
   private User user;
   private UUID userId;

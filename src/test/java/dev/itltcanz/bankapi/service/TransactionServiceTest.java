@@ -17,6 +17,11 @@ import dev.itltcanz.bankapi.entity.enumeration.Role;
 import dev.itltcanz.bankapi.entity.enumeration.TransactionStatus;
 import dev.itltcanz.bankapi.exception.NotFoundException;
 import dev.itltcanz.bankapi.repository.TransactionRepo;
+import dev.itltcanz.bankapi.service.impl.AuthServiceImpl;
+import dev.itltcanz.bankapi.service.impl.BalanceServiceImpl;
+import dev.itltcanz.bankapi.service.impl.CardServiceImpl;
+import dev.itltcanz.bankapi.service.impl.PermissionServiceImpl;
+import dev.itltcanz.bankapi.service.impl.TransactionServiceImpl;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
@@ -40,22 +45,22 @@ class TransactionServiceTest {
   private TransactionRepo transactionRepo;
 
   @Mock
-  private CardService cardService;
+  private CardServiceImpl cardService;
 
   @Mock
-  private AuthenticationService authService;
+  private AuthServiceImpl authService;
 
   @Mock
-  private PermissionService permissionService;
+  private PermissionServiceImpl permissionService;
 
   @Mock
-  private BalanceService balanceService;
+  private BalanceServiceImpl balanceService;
 
   @Mock
   private ModelMapper modelMapper;
 
   @InjectMocks
-  private TransactionService transactionService;
+  private TransactionServiceImpl transactionService;
 
   private Transaction transaction;
   private Card senderCard;
@@ -108,13 +113,13 @@ class TransactionServiceTest {
   }
 
   @Test
-  void getTransactionsAdmin_success() {
+  void getAdmin_Transactions_success() {
     PageRequest pageable = PageRequest.of(0, 10);
     when(transactionRepo.findAll(pageable)).thenReturn(new PageImpl<>(List.of(transaction)));
     when(modelMapper.map(transaction, TransactionDtoResponse.class)).thenReturn(
         new TransactionDtoResponse());
 
-    var result = transactionService.getTransactionsAdmin(pageable);
+    var result = transactionService.getAdminTransactions(pageable);
 
     assertEquals(1, result.getContent().size());
     verify(transactionRepo).findAll(pageable);
@@ -122,7 +127,7 @@ class TransactionServiceTest {
   }
 
   @Test
-  void getTransactionsUser_success() {
+  void getUser_Transactions_success() {
     PageRequest pageable = PageRequest.of(0, 10);
     when(authService.getCurrentUser()).thenReturn(user);
     when(transactionRepo.findTransactionsBySenderCard_Owner(user, pageable)).thenReturn(
@@ -130,7 +135,7 @@ class TransactionServiceTest {
     when(modelMapper.map(transaction, TransactionDtoResponse.class)).thenReturn(
         new TransactionDtoResponse());
 
-    var result = transactionService.getTransactionsUser(pageable);
+    var result = transactionService.getUserTransactions(pageable);
 
     assertEquals(1, result.getContent().size());
     verify(authService).getCurrentUser();
@@ -144,7 +149,7 @@ class TransactionServiceTest {
     when(modelMapper.map(transaction, TransactionDtoResponse.class)).thenReturn(
         new TransactionDtoResponse());
 
-    TransactionDtoResponse result = transactionService.findByIdWithPermissionCheck(
+    TransactionDtoResponse result = transactionService.getTransactionById(
         transactionId.toString());
 
     assertNotNull(result);

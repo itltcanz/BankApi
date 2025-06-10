@@ -15,6 +15,7 @@ import dev.itltcanz.bankapi.entity.enumeration.Role;
 import dev.itltcanz.bankapi.exception.NotFoundException;
 import dev.itltcanz.bankapi.exception.UsernameAlreadyUseException;
 import dev.itltcanz.bankapi.repository.UserRepo;
+import dev.itltcanz.bankapi.service.impl.AuthServiceImpl;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,7 +32,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @ExtendWith(MockitoExtension.class)
-class AuthenticationServiceTest {
+class AuthServiceTest {
 
   @Mock
   private UserRepo userRepo;
@@ -46,7 +47,7 @@ class AuthenticationServiceTest {
   private ModelMapper modelMapper;
 
   @InjectMocks
-  private AuthenticationService authenticationService;
+  private AuthServiceImpl authenticationService;
 
   private User user;
   private UserDtoRegistration userDto;

@@ -10,6 +10,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import dev.itltcanz.bankapi.repository.CardRepo;
+import dev.itltcanz.bankapi.service.impl.CardNumberGeneratorServiceImpl;
 import dev.itltcanz.bankapi.util.CardNumberGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,7 +26,7 @@ class CardNumberGeneratorServiceTest {
   private CardRepo cardRepo;
 
   @InjectMocks
-  private CardNumberGeneratorService cardNumberGeneratorService;
+  private CardNumberGeneratorServiceImpl cardNumberGeneratorService;
 
   @BeforeEach
   void setUp() {

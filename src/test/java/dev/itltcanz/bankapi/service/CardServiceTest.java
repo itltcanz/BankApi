@@ -22,6 +22,11 @@ import dev.itltcanz.bankapi.exception.NotFoundException;
 import dev.itltcanz.bankapi.filter.CardFilter;
 import dev.itltcanz.bankapi.filter.CardSpecification;
 import dev.itltcanz.bankapi.repository.CardRepo;
+import dev.itltcanz.bankapi.service.impl.AuthServiceImpl;
+import dev.itltcanz.bankapi.service.impl.CardNumberGeneratorServiceImpl;
+import dev.itltcanz.bankapi.service.impl.CardServiceImpl;
+import dev.itltcanz.bankapi.service.impl.PermissionServiceImpl;
+import dev.itltcanz.bankapi.service.impl.UserServiceImpl;
 import java.math.BigDecimal;
 import java.time.YearMonth;
 import java.util.List;
@@ -52,15 +57,15 @@ class CardServiceTest {
   private ModelMapper modelMapper;
 
   @Mock
-  private AuthenticationService authService;
+  private AuthServiceImpl authService;
   @Mock
-  private UserService userService;
+  private UserServiceImpl userService;
   @Mock
-  private PermissionService permissionService;
+  private PermissionServiceImpl permissionService;
   @Mock
-  private CardNumberGeneratorService cardNumberGeneratorService;
+  private CardNumberGeneratorServiceImpl cardNumberGeneratorService;
   @InjectMocks
-  private CardService cardService;
+  private CardServiceImpl cardService;
 
   private Card card;
   private User user;
