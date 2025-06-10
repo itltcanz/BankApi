@@ -17,7 +17,7 @@ Before starting, ensure the following tools are installed:
 - [JDK 17](https://adoptium.net/temurin/releases/)
 - [Maven](https://maven.apache.org/download.cgi)
 
-### Installation and launch
+### Installation
 
 1. Clone the repository:
 
@@ -26,21 +26,21 @@ Before starting, ensure the following tools are installed:
     cd BankApi
     ```
 
-2. Create `.env` based on `.env-example`:
-   ```plaintext
-   SPRING_DATASOURCE_USERNAME=postgres
-   SPRING_DATASOURCE_PASSWORD=pass
-   SPRING_DATA_REDIS_HOST=localhost
-   SPRING_DATA_REDIS_PORT=6379
-   JWT_SECRET=53A73E5F1C4E0A2D3B5F2D784E6A1B4274OMH4TY1F6E5C3A596D635A75327855
-
-3. Start the containers:
+2. Start the containers:
 
     ```bash
     docker compose up -d
     ```
 
-   Installation and launch is now complete.
+   Installation is now complete.
+
+### Launch
+
+Run the project using the built JAR file:
+
+   ```bash
+   java -jar target/BankApi-1.0.0.jar
+   ```
 
 ## Usage
 
