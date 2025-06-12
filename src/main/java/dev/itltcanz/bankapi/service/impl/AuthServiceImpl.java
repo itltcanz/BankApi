@@ -4,10 +4,10 @@ import dev.itltcanz.bankapi.dto.user.UserDtoRegistration;
 import dev.itltcanz.bankapi.dto.user.UserDtoResponse;
 import dev.itltcanz.bankapi.entity.User;
 import dev.itltcanz.bankapi.entity.enumeration.Role;
-import dev.itltcanz.bankapi.exception.NotFoundException;
 import dev.itltcanz.bankapi.exception.UsernameAlreadyUseException;
 import dev.itltcanz.bankapi.repository.UserRepo;
 import dev.itltcanz.bankapi.service.AuthService;
+import dev.itltcanz.bankapi.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 public class AuthServiceImpl implements AuthService {
 
   private final UserRepo userRepo;
+  private final UserService userService;
   private final PasswordEncoder encoder;
   private final AuthenticationManager authManager;
   private final ModelMapper modelMapper;
@@ -28,10 +29,8 @@ public class AuthServiceImpl implements AuthService {
   @Override
   public User getCurrentUser() {
     var username = SecurityContextHolder.getContext().getAuthentication().getName();
-    return userRepo.findByUsername(username).orElseThrow(
-        () -> new NotFoundException("A user with nickname " + username + " was not found"));
+    return userService.findUserById(username);
   }
-
   @Override
   public UserDtoResponse register(UserDtoRegistration userDto) {
     if (userRepo.existsByUsername(userDto.getUsername())) {

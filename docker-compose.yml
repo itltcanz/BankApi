@@ -1,6 +1,7 @@
 version: '3.8'
 services:
   app:
+    container_name: bank-api
     build:
       context: .
       dockerfile: Dockerfile
@@ -21,6 +22,7 @@ services:
       - bank-network
 
   postgres:
+    container_name: bank-postgres
     image: postgres:latest
     environment:
       POSTGRES_DB: bank
@@ -34,6 +36,7 @@ services:
       - bank-network
 
   redis:
+    container_name: bank-redis
     image: redis:latest
     ports:
       - "6379:6379"
